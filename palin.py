@@ -1,21 +1,43 @@
-####
-# Author :Krishna teja
-# Program to find if a given string is palindrome or not
-####
+"""
+Given a string, find the minimum number of characters to be inserted to convert it to palindrome.
+For Example:
+ab: Number of insertions required is 1. bab or aba
+aa: Number of insertions required is 0. aa
+abcd: Number of insertions required is 3. dcbabcd
 
+"""
+class palin(object):
 
-s1 = raw_input("Please enter the string to check for palindrome :")
-# Getting the raw input from the user
+    def ispalin(y):
+        l=len(y)
+        mismatch = 0
+        bool = False
+        if l%2==0:
+            la = len(y)-1
+            for i in range(0,l):
+                if i!=la:
+                    if y[i]==y[la]:
+                        bool = True
+                    else:
+                        bool = False
+                        mismatch = mismatch+1
+            if bool== False : print mismatch
+            else : print '0'
 
-# creating a method to check if the passed string is palindrome or not.
-def is_palindrome(str):
-    s2=s1.lower()
-    s3=s2[::-1] #using the slice operator to reverse the string
-    if(s2==s3):
-        print "Yes, it is a palindrome"
-    else:
-        print "No, it is not a palindrome"
+        else:
+            la = len(y) - 1
+            bool = False
+            for i in range(0, l):
+                if i!=la:
+                    if y[i] == y[la]:
+                        bool = True
+                    else:
+                        mismatch = mismatch + 1
+            if bool == False:
+                print mismatch-1
+            else:
+                print '0'
 
-    return
+    y=raw_input()
+    ispalin(y)
 
-is_palindrome(s1) #calling the method 
