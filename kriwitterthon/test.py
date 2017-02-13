@@ -2,6 +2,11 @@ import configparser
 from twython import Twython,TwythonError
 from flask import Flask,jsonify,request, redirect, render_template
 app = Flask(__name__)
+import logging
+
+
+logging.basicConfig(filename='example.log',level=logging.DEBUG)
+
 
 Config = configparser.ConfigParser()
 Config.read('t.ini')
@@ -16,31 +21,52 @@ twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
 def index():
     return render_template('kriwitterthon.html')
 
+@app.route('/1')
+def aFunc1():
+    return render_template('1.html')
+
+@app.route('/2')
+def aFunc2():
+    return render_template('2.html')
+
+@app.route('/3')
+def aFunc3():
+    return render_template('3.html')
+
 
 
 @app.route('/', methods = ['POST'])
 def Getting_Tweets():
 
-    val = []
-    user = request.form['user']
-    print user
-    for i in range(0, 10):
-        user_timeline = twitter.get_user_timeline(screen_name=user, count=10)
-        for twitteruser in user_timeline:
-            val.append(twitteruser['text'])
-
-    return jsonify(result= val )
-
-@app.route('/', methods = ['POST'])
-
-def Getting_Followers():
     try:
-        user = request.form['user1']
-        print user
+        val = []
+        user = request.form['user']
+        logging.debug('The Twitter Handle used is', user)
+        for i in range(0, 10):
+            user_timeline = twitter.get_user_timeline(screen_name=user, count=10)
+
+            for twitteruser in user_timeline:
+                val.append(twitteruser['text'])
+
+        return jsonify(result= val )
+
+    except TwythonError as e:
+        logging.info(e)
+
+
+
+@app.route('/1', methods = ['POST'])
+def Getting_Followers():
+    user = request.form['user1']
+
+    try:
         val =[]
         next_cursor = -1
+        logging.debug('The Twitter Handle used is', user)
+
         while next_cursor != 0:
             output = twitter.get_followers_list(screen_name=user, count=200, cursor=next_cursor)
+            logging.debug('The Twitter Handle used is',user)
 
             for twitteruser in output["users"]:
                 val.append(twitteruser["screen_name"])
@@ -51,18 +77,24 @@ def Getting_Followers():
 
 
     except TwythonError as e:
-        print e
+        logging.info(e)
 
 
-@app.route('/', methods = ['POST'])
+@app.route('/2', methods = ['POST'])
+
 
 def Getting_Similar_Followers():
+    user = request.form['user2']
+    user2 = request.form['user3']
+    logging.debug('The Twitter Handle used is', user)
+    logging.debug('The Twitter Handle used is', user2)
+
+
     try:
-        user = request.form['user2']
-        print "hi"
+
         val = []
         output = twitter.get_followers_ids(screen_name= user)
-        output2 =twitter.get_followers_ids(screen_name="krish1092")
+        output2 =twitter.get_followers_ids(screen_name=user2)
 
         for twitteruser1 in output["ids"]:
             for twitteruser2 in output2["ids"]:
@@ -72,17 +104,19 @@ def Getting_Similar_Followers():
                     val.append(data)
         return jsonify(result=val)
     except TwythonError as e:
-        print e
+        logging.info(e)
         
 
-@app.route('/', methods = ['POST'])
+@app.route('/3', methods = ['POST'])
 
 def Searching_Tweet():
+    user = request.form['user3']
+    string = request.form['string']
+    logging.debug('The Twitter Handle used is', user)
+    logging.debug('The Twitter Handle used is', string)
+
     try:
-        user = request.form['user3']
-        string = request.form['string']
-        print user, string
-        print 'hi'
+
 
         val = []
         output = twitter.get_user_timeline(screen_name=user)
@@ -93,7 +127,7 @@ def Searching_Tweet():
         return jsonify(result=val)
 
     except TwythonError as e:
-        print e
+        logging.info(e)
 
 
 if __name__ == '__main__':
