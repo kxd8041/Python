@@ -1,0 +1,61 @@
+##############################################################################
+Author: Krishna Teja Duggirala
+Date: 6/12/2019
+Problem Description Link : https://www.hackerrank.com/challenges/sparse-arrays
+##############################################################################
+
+
+#!/bin/python
+
+import math
+import os
+import random
+import re
+import sys
+
+# Complete the matchingStrings function below.
+def matchingStrings(strings, queries):
+
+    stringdict={}
+    for each in strings:
+        if each in stringdict:
+            stringdict[each]=stringdict[each]+1
+        else:
+            stringdict[each]=1
+
+    finalresult=[]
+
+    for each in queries:
+        if each in stringdict:
+            finalresult.append(stringdict[each])
+        else:
+            finalresult.append(0)
+    
+    return finalresult
+
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    strings_count = int(raw_input())
+
+    strings = []
+
+    for _ in xrange(strings_count):
+        strings_item = raw_input()
+        strings.append(strings_item)
+
+    queries_count = int(raw_input())
+
+    queries = []
+
+    for _ in xrange(queries_count):
+        queries_item = raw_input()
+        queries.append(queries_item)
+
+    res = matchingStrings(strings, queries)
+
+    fptr.write('\n'.join(map(str, res)))
+    fptr.write('\n')
+
+    fptr.close()
